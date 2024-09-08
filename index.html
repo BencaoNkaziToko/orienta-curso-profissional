@@ -1,47 +1,366 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teste de Orientação Profissional</title>
-  <link rel="stylesheet" href="./orientacao.css">
-</head>
-<body>
-  <nav class="navbar">
-    <div style="margin-left: 10%; margin-top: 2%; text-transform: uppercase;">💡💼Teste de Orientação Profissional</div>
-    <div class="container">
-      
-      <ul class="nav-links">
-        <li><a href="https:cdcu.ao" target="_self">Inicio</a></li>
-        <li><a href="#">Sobre</a></li>
-        <li><a href="#">Contato</a></li>
-      </ul>
-    </div>
-  </nav>
-  
-  <div class="container">
-    <div id="quizCard" class="card"></div>
-  </div>
-  
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste Vocacional</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
 
-  <div id="modal" class="modal cad">
-    <hr>
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <div id="result"></div>
-    </div>
-  </div>
+        header {
+            background-color: #6261c5;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
+        header img {
+            height: 50px;
+        }
 
+        header h1 {
+            font-size: 24px;
+            margin: 0;
+        }
 
-  <nav class="navbar" style="margin-top: 25%;">
-    <div class="container">
-      <ul class="nav-links">
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        button {
+            background-color: #6261c5;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #6261c5;
+        } 
         
-        <li><a href="#">Concebido e Desenvolvido Por Bênção Toko</a></li>
-      </ul>
+        a {
+            background-color: #6261c5;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            margin: 10px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+
+        a:hover {
+            background-color: #6261c5;
+        }
+
+        #result {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: white;
+            border: 1px solid black;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+        }
+
+        .popup.active {
+            display: block;
+        }
+
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 5;
+        }
+
+        .result-content {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .result-content h3 {
+            color: #6261c5;
+        }
+
+        .result-content ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .result-content ul li {
+            margin: 5px 0;
+        }
+
+        @media screen and (max-width: 600px) {
+            .container {
+                margin: 20px auto;
+                padding: 15px;
+            }
+
+            button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <img src="https://via.placeholder.com/100x50.png?text=Educação" alt="Logo de Educação">
+        <h1>Teste Vocacional</h1>
+    </header>
+
+    <div class="container">
+        <button onclick="startTest()">Começar Teste Vocacional</button>
+        <a href="https://projetolongoka.onrender.com/mukalassi_ensino_superior">Voltar a Página inicial</a>
     </div>
-  </nav>
-  <script src="./orientacao.js"></script>
+
+    <div id="popup" class="popup">
+        <h2>Pergunta <span id="question-number"></span></h2>
+        <p id="question-text"></p>
+        <button id="option-a" onclick="answerQuestion('A')"></button>
+        <button id="option-b" onclick="answerQuestion('B')"></button>
+        <button id="option-c" onclick="answerQuestion('C')"></button>
+    </div>
+
+    <div id="overlay"></div>
+
+    <div class="container" id="result">
+        <h2>Resultado do Teste Vocacional</h2>
+        <div id="profiles"></div>
+        <div id="courses" class="result-content"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "Qual tipo de raciocínio você mais gosta de aplicar em problemas do dia a dia?",
+                options: { A: "Raciocínio lógico e analítico", B: "Raciocínio empático e social", C: "Raciocínio criativo e inovador" }
+            },
+            {
+                text: "Você prefere trabalhar em ambientes que envolvem o uso de fórmulas, cuidados com a saúde ou expressão artística?",
+                options: { A: "Fórmulas e cálculos", B: "Cuidar da saúde", C: "Expressão artística e criativa" }
+            },
+            {
+                text: "Como você lida com problemas? Prefere uma abordagem prática, um estudo profundo ou uma resolução criativa?",
+                options: { A: "Abordagem prática e lógica", B: "Estudo detalhado e aplicado", C: "Resolução criativa e fora da caixa" }
+            },
+            {
+                text: "Você se vê trabalhando mais em um laboratório, em um hospital ou em um ambiente cultural?",
+                options: { A: "Laboratório ou ambientes técnicos", B: "Hospital ou ambientes de saúde", C: "Galerias, teatros ou ambientes artísticos" }
+            },
+            {
+                text: "Você prefere realizar atividades que envolvem tecnologia, ciências humanas ou ciências sociais?",
+                options: { A: "Tecnologia e ciência exata", B: "Ciências humanas", C: "Ciências sociais" }
+            },
+            {
+                text: "Você se interessa mais por matemática, biologia ou literatura?",
+                options: { A: "Matemática", B: "Biologia", C: "Literatura" }
+            },
+            {
+                text: "Em que área você acredita que suas habilidades são mais fortes?",
+                options: { A: "Ciências exatas (física, matemática, tecnologia)", B: "Ciências da saúde (medicina, enfermagem)", C: "Artes, linguagens ou humanidades" }
+            },
+            {
+                text: "Como você prefere resolver conflitos ou desafios?",
+                options: { A: "De forma lógica e racional", B: "Com empatia e cuidado", C: "Criando soluções inovadoras e artísticas" }
+            },
+            {
+                text: "Você se identifica mais com carreiras que envolvem a engenharia, pedagogia ou comunicação?",
+                options: { A: "Engenharia", B: "Pedagogia", C: "Comunicação e mídias" }
+            },
+            {
+                text: "Qual das seguintes áreas mais te atrai?",
+                options: { A: "Ciências exatas e tecnológicas", B: "Ciências biológicas e da saúde", C: "Ciências sociais e humanas, artes ou literatura" }
+            }
+        ];
+
+        const profiles = {
+            exactSciences: 0,
+            healthSciences: 0,
+            socialSciences: 0,
+            humanities: 0,
+            arts: 0,
+            education: 0
+        };
+
+        let currentQuestionIndex = 0;
+
+        function startTest() {
+            currentQuestionIndex = 0;
+            for (let key in profiles) {
+                profiles[key] = 0;
+            }
+
+            showPopup();
+            displayQuestion();
+        }
+
+      
+
+        function showPopup() {
+            document.getElementById("popup").classList.add("active");
+            document.getElementById("overlay").style.display = "block";
+        }
+
+        function hidePopup() {
+            document.getElementById("popup").classList.remove("active");
+            document.getElementById("overlay").style.display = "none";
+        }
+
+        function displayQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById("question-number").textContent = currentQuestionIndex + 1;
+            document.getElementById("question-text").textContent = question.text;
+            document.getElementById("option-a").textContent = question.options.A;
+            document.getElementById("option-b").textContent = question.options.B;
+            document.getElementById("option-c").textContent = question.options.C;
+        }
+
+        function answerQuestion(option) {
+            if (option === 'A') {
+                profiles.exactSciences++;
+            } else if (option === 'B') {
+                profiles.healthSciences++;
+            } else if (option === 'C') {
+                profiles.arts++;
+            }
+
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                displayQuestion();
+            } else {
+                showResults();
+                hidePopup();
+            }
+        }
+
+        function showResults() {
+            const totalAnswers = profiles.exactSciences + profiles.healthSciences + profiles.socialSciences + profiles.humanities + profiles.arts + profiles.education;
+            const exactSciencesPercentage = Math.round((profiles.exactSciences / totalAnswers) * 100);
+            const healthSciencesPercentage = Math.round((profiles.healthSciences / totalAnswers) * 100);
+            const socialSciencesPercentage = Math.round((profiles.socialSciences / totalAnswers) * 100);
+            const humanitiesPercentage = Math.round((profiles.humanities / totalAnswers) * 100);
+            const artsPercentage = Math.round((profiles.arts / totalAnswers) * 100);
+            const educationPercentage = Math.round((profiles.education / totalAnswers) * 100);
+
+            let dominantProfile = '';
+            let suggestedCourses = '';
+            let essentialDisciplines = '';
+
+            if (exactSciencesPercentage >= healthSciencesPercentage && exactSciencesPercentage >= artsPercentage) {
+                dominantProfile = "Ciências Exatas e Tecnológicas";
+                suggestedCourses = `
+                    - Engenharia de Computação 
+                    - Engenharia Civil 
+                    - Física 
+                    - Matemática 
+                    - Química 
+                    - Estatística
+                `;
+                essentialDisciplines = `
+                    <ul>
+                        <li>Matemática Avançada</li>
+                        <li>Física Geral</li>
+                        <li>Química Inorgânica e Orgânica</li>
+                        <li>Programação e Algoritmos</li>
+                        <li>Estatística</li>
+                    </ul>
+                `;
+            } else if (healthSciencesPercentage >= exactSciencesPercentage && healthSciencesPercentage >= artsPercentage) {
+                dominantProfile = "Ciências da Saúde";
+                suggestedCourses = `
+                    - Medicina 
+                    - Enfermagem 
+                    - Biomedicina 
+                    - Nutrição 
+                    - Fisioterapia 
+                    - Farmácia
+                `;
+                essentialDisciplines = `
+                    <ul>
+                        <li>Biologia Geral e Celular</li>
+                        <li>Química Orgânica e Inorgânica</li>
+                        <li>Anatomia e Fisiologia</li>
+                        <li>Microbiologia</li>
+                        <li>Farmacologia</li>
+                    </ul>
+                `;
+            } else if (artsPercentage >= exactSciencesPercentage && artsPercentage >= healthSciencesPercentage) {
+                dominantProfile = "Artes e Humanidades";
+                suggestedCourses = `
+                    - Artes Cênicas 
+                    - Artes Visuais 
+                    - Design Gráfico 
+                    - Música 
+                    - Literatura 
+                    - História da Arte
+                `;
+                essentialDisciplines = `
+                    <ul>
+                        <li>Teoria da Arte</li>
+                        <li>História da Arte</li>
+                        <li>Desenho e Pintura</li>
+                        <li>Design Gráfico e Digital</li>
+                        <li>Literatura Comparada</li>
+                    </ul>
+                `;
+            }
+
+            document.getElementById("profiles").innerHTML = `
+                <p>Ciências Exatas: ${exactSciencesPercentage}%</p>
+                <p>Ciências da Saúde: ${healthSciencesPercentage}%</p>
+                <p>Artes e Humanidades: ${artsPercentage}%</p>
+            `;
+
+            document.getElementById("courses").innerHTML = `
+                <h3>Cursos Sugeridos:</h3>
+                ${suggestedCourses}
+                <h3>Disciplinas e Temas Essenciais:</h3>
+                ${essentialDisciplines}
+            `;
+
+            document.getElementById("result").style.display = "block";
+        }
+    </script>
 </body>
+
 </html>
