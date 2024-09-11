@@ -17,67 +17,56 @@
         header {
             background-color: #6261c5;
             color: #fff;
-            padding: 20px;
+            padding: 1rem;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
+            text-align: center;
         }
 
         header img {
-            height: 50px;
+            height: auto;
+            max-width: 100%;
         }
 
         header h1 {
-            font-size: 24px;
-            margin: 0;
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
         }
 
         .container {
             max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
+            margin: 2rem auto;
+            padding: 1rem;
             background-color: white;
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
             border-radius: 8px;
             text-align: center;
         }
 
-        button {
-            background-color: #6261c5;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            margin: 10px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #6261c5;
-        } 
-        
+        button,
         a {
             background-color: #6261c5;
             color: white;
             border: none;
-            padding: 15px 30px;
-            margin: 10px;
+            padding: 1rem 2rem;
+            margin: 0.5rem;
             border-radius: 25px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 1rem;
             transition: background-color 0.3s;
             text-decoration: none;
+            display: inline-block;
         }
 
+        button:hover,
         a:hover {
-            background-color: #6261c5;
+            background-color: #5054a5;
         }
 
         #result {
             display: none;
-            margin-top: 20px;
+            margin-top: 1rem;
         }
 
         .popup {
@@ -86,12 +75,14 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%);
-            padding: 20px;
+            padding: 1rem;
             background-color: white;
             border: 1px solid black;
             z-index: 10;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
             border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
         }
 
         .popup.active {
@@ -111,7 +102,7 @@
 
         .result-content {
             text-align: left;
-            margin-top: 20px;
+            margin-top: 1rem;
         }
 
         .result-content h3 {
@@ -124,18 +115,17 @@
         }
 
         .result-content ul li {
-            margin: 5px 0;
+            margin: 0.5rem 0;
         }
 
         @media screen and (max-width: 600px) {
-            .container {
-                margin: 20px auto;
-                padding: 15px;
+            header h1 {
+                font-size: 1.2rem;
             }
 
-            button {
-                padding: 10px 20px;
-                font-size: 14px;
+            button, a {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -149,7 +139,7 @@
 
     <div class="container">
         <button onclick="startTest()">Começar Teste Vocacional</button>
-        <a href="https://projetolongoka.onrender.com/mukalassi_ensino_superior">Voltar a Página inicial</a>
+        <a href="https://projetolongoka.onrender.com/mukalassi_ensino_superior">Voltar à Página Inicial</a>
     </div>
 
     <div id="popup" class="popup">
@@ -233,8 +223,6 @@
             displayQuestion();
         }
 
-      
-
         function showPopup() {
             document.getElementById("popup").classList.add("active");
             document.getElementById("overlay").style.display = "block";
@@ -277,10 +265,7 @@
             const totalAnswers = profiles.exactSciences + profiles.healthSciences + profiles.socialSciences + profiles.humanities + profiles.arts + profiles.education;
             const exactSciencesPercentage = Math.round((profiles.exactSciences / totalAnswers) * 100);
             const healthSciencesPercentage = Math.round((profiles.healthSciences / totalAnswers) * 100);
-            const socialSciencesPercentage = Math.round((profiles.socialSciences / totalAnswers) * 100);
-            const humanitiesPercentage = Math.round((profiles.humanities / totalAnswers) * 100);
             const artsPercentage = Math.round((profiles.arts / totalAnswers) * 100);
-            const educationPercentage = Math.round((profiles.education / totalAnswers) * 100);
 
             let dominantProfile = '';
             let suggestedCourses = '';
